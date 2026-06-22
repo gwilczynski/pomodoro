@@ -33,10 +33,11 @@ a counter each tick (that accumulates error). Instead it stores a wall-clock end
 timestamp in `endTimeRef` and derives `remainingSec` from `endTime - Date.now()` on
 each interval tick. Pause snapshots the remaining time and clears the end time; resume
 computes a fresh end time from the snapshot. Status machine: `idle → running → paused
-→ finished`. `setDuration` while `running` restarts the countdown from the new duration
-and *stays* running (fresh end time, clock keeps ticking); a value of zero falls through
-to `idle`. When editing tick behavior, preserve the timestamp-derived model — don't
-reintroduce a decrementing counter.
+→ finished`. There is **no start button**: `setDuration` *always* starts (or restarts)
+the countdown from the new duration and leaves the timer `running` — whether previously
+idle, running, or finished. A value of zero falls through to `idle`. `start` is retained
+only to resume from `paused`. When editing tick behavior, preserve the timestamp-derived
+model — don't reintroduce a decrementing counter.
 
 **`lib/arc.ts` — SVG geometry.** Shared angle convention used everywhere: **0° at
 12 o'clock, increasing clockwise**. `polarToCartesian` shifts by −90° and relies on

@@ -1,5 +1,4 @@
 import '@material/web/button/filled-button.js'
-import '@material/web/button/text-button.js'
 import '@material/web/chips/chip-set.js'
 import '@material/web/chips/suggestion-chip.js'
 import { formatTime } from '../lib/time'
@@ -11,9 +10,8 @@ interface ControlsProps {
   status: TimerStatus
   remainingSec: number
   durationSec: number
-  onStart: () => void
   onPause: () => void
-  onReset: () => void
+  onResume: () => void
   onSetDuration: (seconds: number) => void
 }
 
@@ -21,16 +19,15 @@ export function Controls({
   status,
   remainingSec,
   durationSec,
-  onStart,
   onPause,
-  onReset,
+  onResume,
   onSetDuration,
 }: ControlsProps) {
   const isRunning = status === 'running'
+  const isPaused = status === 'paused'
   const isFinished = status === 'finished'
   // Show the live clock when there is a session in flight, otherwise the set duration.
   const display = status === 'idle' ? durationSec : remainingSec
-  const canStart = !isRunning && (isFinished ? durationSec > 0 : remainingSec > 0)
 
   return (
     <div className="controls">
@@ -57,34 +54,18 @@ export function Controls({
         ))}
       </md-chip-set>
 
-      <div className="controls__main">
-        {isRunning ? (
+      {/* The countdown starts as soon as a duration is picked, so the only
+          button left is the pause/resume toggle for a live session. */}
+      {(isRunning || isPaused) && (
+        <div className="controls__main">
           <md-filled-button
             className="controls__btn"
-            onClick={onPause}
+            onClick={isRunning ? onPause : onResume}
           >
-            Pause
+            {isRunning ? 'Pause' : 'Resume'}
           </md-filled-button>
-        ) : (
-          <md-filled-button
-            className="controls__btn"
-            onClick={onStart}
-            // React serializes `disabled={false}` as the literal attribute
-            // disabled="false" on a custom element, which Lit reads as true.
-            // Emit the attribute only when actually disabled.
-            disabled={!canStart || undefined}
-          >
-            {status === 'paused' ? 'Resume' : 'Start'}
-          </md-filled-button>
-        )}
-        <md-text-button
-          className="controls__btn"
-          onClick={onReset}
-          disabled={status === 'idle' || undefined}
-        >
-          Reset
-        </md-text-button>
-      </div>
+        </div>
+      )}
     </div>
   )
 }

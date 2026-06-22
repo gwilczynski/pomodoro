@@ -9,7 +9,7 @@ export interface Timer {
   durationSec: number
   /** Seconds left on the clock (never negative). */
   remainingSec: number
-  /** Set a new duration; ignored while running. Resets the clock to idle. */
+  /** Set a new duration and start the countdown immediately; zero goes idle. */
   setDuration: (seconds: number) => void
   /** Start from idle/finished, or resume from paused. */
   start: () => void
@@ -114,12 +114,12 @@ export function useTimer(options: UseTimerOptions = {}): Timer {
   const setDuration = useCallback(
     (seconds: number) => {
       const next = clamp(Math.round(seconds), 0, 100 * 60)
-      setStatus((prev) => {
+      setStatus(() => {
         setDurationSec(next)
         setRemainingSec(next)
-        // While running, keep counting down: restart from the new duration
-        // rather than stopping. A drag to zero falls through to idle.
-        if (prev === 'running' && next > 0) {
+        // Selecting a duration starts the countdown straight away — there is
+        // no separate start button. A value of zero falls through to idle.
+        if (next > 0) {
           endTimeRef.current = Date.now() + next * 1000
           startTick()
           return 'running'

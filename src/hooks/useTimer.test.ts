@@ -85,11 +85,27 @@ describe('useTimer', () => {
     expect(result.current.remainingSec).toBe(60)
   })
 
-  it('setDuration updates duration and clock while idle', () => {
-    const { result } = renderHook(() => useTimer({ initialSeconds: 60 }))
+  it('setDuration sets the duration and starts the countdown', () => {
+    const { result } = renderHook(() =>
+      useTimer({ initialSeconds: 60, tickMs: 200 }),
+    )
     act(() => result.current.setDuration(120))
     expect(result.current.durationSec).toBe(120)
     expect(result.current.remainingSec).toBe(120)
+    expect(result.current.status).toBe('running')
+
+    act(() => {
+      vi.advanceTimersByTime(10_000)
+    })
+    expect(result.current.remainingSec).toBeCloseTo(110, 0)
+  })
+
+  it('setDuration of zero falls through to idle', () => {
+    const { result } = renderHook(() => useTimer({ initialSeconds: 60 }))
+    act(() => result.current.setDuration(0))
+    expect(result.current.status).toBe('idle')
+    expect(result.current.durationSec).toBe(0)
+    expect(result.current.remainingSec).toBe(0)
   })
 
   it('setDuration while running restarts the countdown without stopping', () => {

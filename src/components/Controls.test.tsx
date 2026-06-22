@@ -13,9 +13,8 @@ function setup(overrides: Partial<React.ComponentProps<typeof Controls>> = {}) {
     status: 'idle' as const,
     remainingSec: 1500,
     durationSec: 1500,
-    onStart: vi.fn(),
     onPause: vi.fn(),
-    onReset: vi.fn(),
+    onResume: vi.fn(),
     onSetDuration: vi.fn(),
     ...overrides,
   }
@@ -31,10 +30,10 @@ describe('Controls', () => {
     expect(screen.getByText('25:00')).toBeInTheDocument()
   })
 
-  it('fires onStart when Start is clicked', async () => {
-    const props = setup()
-    await userEvent.click(screen.getByText('Start'))
-    expect(props.onStart).toHaveBeenCalledTimes(1)
+  it('has no start or reset button — picking a duration runs the timer', () => {
+    setup()
+    expect(screen.queryByText('Start')).not.toBeInTheDocument()
+    expect(screen.queryByText('Reset')).not.toBeInTheDocument()
   })
 
   it('shows Pause while running and fires onPause', async () => {
@@ -43,15 +42,10 @@ describe('Controls', () => {
     expect(props.onPause).toHaveBeenCalledTimes(1)
   })
 
-  it('labels the start button Resume when paused', () => {
-    setup({ status: 'paused', remainingSec: 1000 })
-    expect(screen.getByText('Resume')).toBeInTheDocument()
-  })
-
-  it('does not fire onStart when the button is disabled', async () => {
-    const props = setup({ status: 'idle', durationSec: 0, remainingSec: 0 })
-    await userEvent.click(screen.getByText('Start'))
-    expect(props.onStart).not.toHaveBeenCalled()
+  it('shows Resume while paused and fires onResume', async () => {
+    const props = setup({ status: 'paused', remainingSec: 1000 })
+    await userEvent.click(screen.getByText('Resume'))
+    expect(props.onResume).toHaveBeenCalledTimes(1)
   })
 
   it('presets call onSetDuration with the right seconds', async () => {
