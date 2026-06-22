@@ -1,6 +1,5 @@
 import { useCallback, useRef } from 'react'
 import { describeWedge, polarToCartesian, pointToAngle } from '../lib/arc'
-import type { TimerStatus } from '../hooks/useTimer'
 
 const SIZE = 240
 const CENTER = SIZE / 2
@@ -12,7 +11,6 @@ interface TimerDiskProps {
   durationSec: number
   /** Full-scale of the dial in minutes (a full circle == maxMinutes). */
   maxMinutes: number
-  status: TimerStatus
   /** Called with a new duration in seconds when the user drags the dial. */
   onSetDuration: (seconds: number) => void
 }
@@ -68,16 +66,12 @@ export function TimerDisk({
   remainingSec,
   durationSec,
   maxMinutes,
-  status,
   onSetDuration,
 }: TimerDiskProps) {
   const svgRef = useRef<SVGSVGElement | null>(null)
   // Last minutes read during the current drag, used to keep a single drag from
   // jumping across the 12 o'clock seam (where 0 and maxMinutes coincide).
   const lastMinutesRef = useRef<number | null>(null)
-  // Editable any time except when finished — dragging mid-run restarts the
-  // countdown from the new duration without stopping the clock.
-  const draggable = status !== 'finished'
 
   // Map a client (screen) point onto the SVG's internal viewBox coordinates,
   // then to a duration in seconds, snapped to whole minutes.
@@ -108,23 +102,21 @@ export function TimerDisk({
 
   const handlePointerDown = useCallback(
     (e: React.PointerEvent<SVGSVGElement>) => {
-      if (!draggable) return
       e.currentTarget.setPointerCapture(e.pointerId)
       // Fresh drag: start with no seam guard so the first tap reads as-is.
       lastMinutesRef.current = null
       onSetDuration(durationFromEvent(e.clientX, e.clientY))
     },
-    [draggable, durationFromEvent, onSetDuration],
+    [durationFromEvent, onSetDuration],
   )
 
   const handlePointerMove = useCallback(
     (e: React.PointerEvent<SVGSVGElement>) => {
-      if (!draggable) return
       // Only react while a button/touch is held (capture is active).
       if (!e.currentTarget.hasPointerCapture(e.pointerId)) return
       onSetDuration(durationFromEvent(e.clientX, e.clientY))
     },
-    [draggable, durationFromEvent, onSetDuration],
+    [durationFromEvent, onSetDuration],
   )
 
   // Remaining time as a fraction of the dial's full scale.
@@ -136,7 +128,7 @@ export function TimerDisk({
   return (
     <svg
       ref={svgRef}
-      className={`timer-disk${draggable ? ' timer-disk--draggable' : ''}`}
+      className="timer-disk timer-disk--draggable"
       viewBox={`0 0 ${SIZE} ${SIZE}`}
       role="img"
       aria-label={`Time timer, ${Math.round(remainingSec)} seconds remaining`}

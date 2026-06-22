@@ -50,8 +50,9 @@ instead (see the `isFull` branch). Keep that special case if you touch the wedge
 the remaining-time wedge, and a center hub. Dragging the dial sets duration: pointer
 events are mapped from screen coords into the SVG viewBox (`SIZE` = 240) via
 `getBoundingClientRect`, converted to an angle (`pointToAngle`), then snapped to whole
-minutes. Dragging is enabled in every status except `finished` (dragging mid-run
-re-sets the clock and keeps it running). Geometry constants
+minutes. Dragging is enabled in every status (including `finished`, so you can drag a
+new countdown the moment time's up) — `setDuration` restarts the clock from the new
+duration regardless of prior status. Geometry constants
 (`SIZE`, `CENTER`, `FACE_RADIUS`, `DISK_RADIUS`) live at the top of the file.
 
 **`lib/beep.ts`.** Web Audio two-tone chime on finish — no audio asset. No-ops without

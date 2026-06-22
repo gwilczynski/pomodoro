@@ -29,7 +29,6 @@ export default function App() {
           remainingSec={timer.remainingSec}
           durationSec={timer.durationSec}
           maxMinutes={MAX_MINUTES}
-          status={timer.status}
           onSetDuration={timer.setDuration}
         />
 

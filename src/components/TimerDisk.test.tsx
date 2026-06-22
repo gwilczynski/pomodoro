@@ -1,11 +1,10 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { TimerDisk } from './TimerDisk'
 
 describe('TimerDisk', () => {
   const baseProps = {
     maxMinutes: 60,
-    status: 'idle' as const,
     onSetDuration: vi.fn(),
   }
 
@@ -49,5 +48,24 @@ describe('TimerDisk', () => {
     expect(
       screen.getByRole('img', { name: /300 seconds remaining/i }),
     ).toBeInTheDocument()
+  })
+
+  it('stays draggable after the timer finishes (zero remaining)', () => {
+    const onSetDuration = vi.fn()
+    render(
+      <TimerDisk
+        {...baseProps}
+        onSetDuration={onSetDuration}
+        durationSec={25 * 60}
+        remainingSec={0}
+      />,
+    )
+    const dial = screen.getByRole('img')
+    // jsdom doesn't implement pointer capture — stub it so the handler runs.
+    dial.setPointerCapture = vi.fn()
+    fireEvent.pointerDown(dial, { pointerId: 1, clientX: 120, clientY: 20 })
+    // The dial accepted the drag and pushed a new duration up — without the
+    // fix, a 'finished' timer ignored pointer input entirely.
+    expect(onSetDuration).toHaveBeenCalled()
   })
 })
