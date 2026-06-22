@@ -92,13 +92,23 @@ describe('useTimer', () => {
     expect(result.current.remainingSec).toBe(120)
   })
 
-  it('ignores setDuration while running', () => {
+  it('setDuration while running restarts the countdown without stopping', () => {
     const { result } = renderHook(() =>
       useTimer({ initialSeconds: 60, tickMs: 200 }),
     )
     act(() => result.current.start())
+    act(() => {
+      vi.advanceTimersByTime(30_000)
+    })
+    // Re-set the dial mid-run: the clock jumps to the new duration and keeps going.
     act(() => result.current.setDuration(120))
-    expect(result.current.durationSec).toBe(60)
+    expect(result.current.durationSec).toBe(120)
     expect(result.current.status).toBe('running')
+    expect(result.current.remainingSec).toBe(120)
+
+    act(() => {
+      vi.advanceTimersByTime(10_000)
+    })
+    expect(result.current.remainingSec).toBeCloseTo(110, 0)
   })
 })

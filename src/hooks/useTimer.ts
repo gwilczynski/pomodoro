@@ -113,16 +113,23 @@ export function useTimer(options: UseTimerOptions = {}): Timer {
 
   const setDuration = useCallback(
     (seconds: number) => {
-      // Changing the dial mid-run doesn't make sense; ignore while running.
-      if (status === 'running') return
       const next = clamp(Math.round(seconds), 0, 100 * 60)
-      clearTick()
-      endTimeRef.current = null
-      setDurationSec(next)
-      setRemainingSec(next)
-      setStatus('idle')
+      setStatus((prev) => {
+        setDurationSec(next)
+        setRemainingSec(next)
+        // While running, keep counting down: restart from the new duration
+        // rather than stopping. A drag to zero falls through to idle.
+        if (prev === 'running' && next > 0) {
+          endTimeRef.current = Date.now() + next * 1000
+          startTick()
+          return 'running'
+        }
+        clearTick()
+        endTimeRef.current = null
+        return 'idle'
+      })
     },
-    [clearTick, status],
+    [clearTick, startTick],
   )
 
   // Tidy up the interval if the component unmounts mid-countdown.

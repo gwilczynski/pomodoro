@@ -72,7 +72,9 @@ export function TimerDisk({
   onSetDuration,
 }: TimerDiskProps) {
   const svgRef = useRef<SVGSVGElement | null>(null)
-  const draggable = status === 'idle' || status === 'paused'
+  // Editable any time except when finished — dragging mid-run restarts the
+  // countdown from the new duration without stopping the clock.
+  const draggable = status !== 'finished'
 
   // Map a client (screen) point onto the SVG's internal viewBox coordinates,
   // then to a duration in seconds, snapped to whole minutes.

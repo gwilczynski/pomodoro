@@ -49,20 +49,12 @@ describe('Controls', () => {
     expect(props.onSetDuration).toHaveBeenCalledWith(1500)
   })
 
-  it('steppers nudge the duration by a minute', async () => {
-    const props = setup({ durationSec: 600 })
-    await userEvent.click(
-      screen.getByRole('button', { name: 'Increase by one minute' }),
-    )
-    expect(props.onSetDuration).toHaveBeenCalledWith(660)
-  })
-
-  it('disables preset and stepper buttons while running', () => {
-    setup({ status: 'running' })
-    expect(screen.getByRole('button', { name: '25m' })).toBeDisabled()
-    expect(
-      screen.getByRole('button', { name: 'Increase by one minute' }),
-    ).toBeDisabled()
+  it('presets stay active while running so the clock can be re-set', async () => {
+    const props = setup({ status: 'running', remainingSec: 1490 })
+    const preset = screen.getByRole('button', { name: '25m' })
+    expect(preset).toBeEnabled()
+    await userEvent.click(preset)
+    expect(props.onSetDuration).toHaveBeenCalledWith(1500)
   })
 
   it('announces when time is up', () => {

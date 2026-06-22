@@ -1,7 +1,7 @@
 import { formatTime } from '../lib/time'
 import type { TimerStatus } from '../hooks/useTimer'
 
-const PRESETS_MIN = [5, 10, 25, 45]
+const PRESETS_MIN = [5, 10, 25, 55]
 
 interface ControlsProps {
   status: TimerStatus
@@ -29,9 +29,6 @@ export function Controls({
     status === 'idle' ? durationSec : remainingSec
   const canStart = !isRunning && (isFinished ? durationSec > 0 : remainingSec > 0)
 
-  const adjust = (deltaMin: number) =>
-    onSetDuration(durationSec + deltaMin * 60)
-
   return (
     <div className="controls">
       <div
@@ -44,27 +41,6 @@ export function Controls({
 
       {isFinished && <p className="controls__done">Time’s up!</p>}
 
-      <div className="controls__steppers">
-        <button
-          type="button"
-          className="controls__step"
-          onClick={() => adjust(-1)}
-          disabled={isRunning || durationSec <= 0}
-          aria-label="Decrease by one minute"
-        >
-          −1
-        </button>
-        <button
-          type="button"
-          className="controls__step"
-          onClick={() => adjust(1)}
-          disabled={isRunning}
-          aria-label="Increase by one minute"
-        >
-          +1
-        </button>
-      </div>
-
       <div className="controls__presets">
         {PRESETS_MIN.map((min) => (
           <button
@@ -72,7 +48,6 @@ export function Controls({
             key={min}
             className="controls__preset"
             onClick={() => onSetDuration(min * 60)}
-            disabled={isRunning}
           >
             {min}m
           </button>

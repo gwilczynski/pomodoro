@@ -33,8 +33,10 @@ a counter each tick (that accumulates error). Instead it stores a wall-clock end
 timestamp in `endTimeRef` and derives `remainingSec` from `endTime - Date.now()` on
 each interval tick. Pause snapshots the remaining time and clears the end time; resume
 computes a fresh end time from the snapshot. Status machine: `idle → running → paused
-→ finished`. `setDuration` is intentionally ignored while `running`. When editing tick
-behavior, preserve the timestamp-derived model — don't reintroduce a decrementing counter.
+→ finished`. `setDuration` while `running` restarts the countdown from the new duration
+and *stays* running (fresh end time, clock keeps ticking); a value of zero falls through
+to `idle`. When editing tick behavior, preserve the timestamp-derived model — don't
+reintroduce a decrementing counter.
 
 **`lib/arc.ts` — SVG geometry.** Shared angle convention used everywhere: **0° at
 12 o'clock, increasing clockwise**. `polarToCartesian` shifts by −90° and relies on
@@ -47,7 +49,8 @@ instead (see the `isFull` branch). Keep that special case if you touch the wedge
 the remaining-time wedge, and a center hub. Dragging the dial sets duration: pointer
 events are mapped from screen coords into the SVG viewBox (`SIZE` = 240) via
 `getBoundingClientRect`, converted to an angle (`pointToAngle`), then snapped to whole
-minutes. Dragging is only enabled while `idle` or `paused`. Geometry constants
+minutes. Dragging is enabled in every status except `finished` (dragging mid-run
+re-sets the clock and keeps it running). Geometry constants
 (`SIZE`, `CENTER`, `FACE_RADIUS`, `DISK_RADIUS`) live at the top of the file.
 
 **`lib/beep.ts`.** Web Audio two-tone chime on finish — no audio asset. No-ops without

@@ -86,7 +86,6 @@
   font-weight: 600;
 }
 
-.controls__steppers,
 .controls__presets,
 .controls__main {
   display: flex;
@@ -95,7 +94,6 @@
   justify-content: center;
 }
 
-.controls__step,
 .controls__preset {
   min-width: 3rem;
   padding: 0.5rem 0.75rem;
@@ -106,7 +104,6 @@
   transition: background 120ms ease, border-color 120ms ease;
 }
 
-.controls__step:hover:not(:disabled),
 .controls__preset:hover:not(:disabled) {
   border-color: var(--accent);
 }
@@ -144,7 +141,6 @@
 }
 
 .controls__btn:disabled,
-.controls__step:disabled,
 .controls__preset:disabled {
   opacity: 0.4;
 }
