@@ -1,17 +1,107 @@
+/*
+ * Material Design 3 theme tokens.
+ *
+ * A red-seeded MD3 scheme (the classic Time Timer red drives the palette).
+ * The @material/web components read these --md-sys-color-* variables directly,
+ * so theming the whole component set is just a matter of defining them here.
+ * Dark is the default; a light scheme follows via prefers-color-scheme.
+ *
+ * Brand tokens (--tt-*) cover the hand-drawn SVG disk, which is data-viz rather
+ * than a themable MD3 surface — its vivid red and light face stay constant
+ * across schemes so the timer always reads as a Time Timer.
+ */
 :root {
-  --bg: #1b1c22;
-  --surface: #25262e;
-  --text: #f2f3f7;
-  --muted: #a2a6b4;
-  --accent: #e8413a;
-  --accent-dim: #b9322d;
-  --face: #f4f5f8;
-  --face-ink: #2a2c34;
+  /* ---- MD3 system colors: dark scheme ---- */
+  --md-sys-color-primary: #ffb4ab;
+  --md-sys-color-surface-tint: #ffb4ab;
+  --md-sys-color-on-primary: #690005;
+  --md-sys-color-primary-container: #93000a;
+  --md-sys-color-on-primary-container: #ffdad6;
+  --md-sys-color-secondary: #e7bdb8;
+  --md-sys-color-on-secondary: #442926;
+  --md-sys-color-secondary-container: #5d3f3b;
+  --md-sys-color-on-secondary-container: #ffdad6;
+  --md-sys-color-tertiary: #e2c38c;
+  --md-sys-color-on-tertiary: #402d05;
+  --md-sys-color-tertiary-container: #5a4319;
+  --md-sys-color-on-tertiary-container: #ffdea7;
+  --md-sys-color-error: #ffb4ab;
+  --md-sys-color-on-error: #690005;
+  --md-sys-color-error-container: #93000a;
+  --md-sys-color-on-error-container: #ffdad6;
+  --md-sys-color-background: #1a1110;
+  --md-sys-color-on-background: #f1dedb;
+  --md-sys-color-surface: #1a1110;
+  --md-sys-color-on-surface: #f1dedb;
+  --md-sys-color-surface-variant: #534341;
+  --md-sys-color-on-surface-variant: #d8c2be;
+  --md-sys-color-outline: #a08c89;
+  --md-sys-color-outline-variant: #534341;
+  --md-sys-color-shadow: #000000;
+  --md-sys-color-scrim: #000000;
+  --md-sys-color-inverse-surface: #f1dedb;
+  --md-sys-color-inverse-on-surface: #382e2c;
+  --md-sys-color-inverse-primary: #c00100;
+  --md-sys-color-surface-dim: #1a1110;
+  --md-sys-color-surface-bright: #423735;
+  --md-sys-color-surface-container-lowest: #140c0b;
+  --md-sys-color-surface-container-low: #231917;
+  --md-sys-color-surface-container: #271d1b;
+  --md-sys-color-surface-container-high: #322825;
+  --md-sys-color-surface-container-highest: #3d3230;
+
+  /* ---- Brand tokens for the SVG disk (scheme-independent) ---- */
+  --tt-wedge: #e8413a;
+  --tt-face: #f4f5f8;
+  --tt-face-ink: #2a2c34;
+  --tt-face-edge: #d7d9e0;
 
   color-scheme: dark;
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial,
-    sans-serif;
+  font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    /* ---- MD3 system colors: light scheme ---- */
+    --md-sys-color-primary: #c00100;
+    --md-sys-color-surface-tint: #c00100;
+    --md-sys-color-on-primary: #ffffff;
+    --md-sys-color-primary-container: #ffdad6;
+    --md-sys-color-on-primary-container: #410002;
+    --md-sys-color-secondary: #775652;
+    --md-sys-color-on-secondary: #ffffff;
+    --md-sys-color-secondary-container: #ffdad6;
+    --md-sys-color-on-secondary-container: #2c1512;
+    --md-sys-color-tertiary: #735b2e;
+    --md-sys-color-on-tertiary: #ffffff;
+    --md-sys-color-tertiary-container: #ffdea7;
+    --md-sys-color-on-tertiary-container: #271900;
+    --md-sys-color-error: #ba1a1a;
+    --md-sys-color-on-error: #ffffff;
+    --md-sys-color-error-container: #ffdad6;
+    --md-sys-color-on-error-container: #410002;
+    --md-sys-color-background: #fff8f7;
+    --md-sys-color-on-background: #231917;
+    --md-sys-color-surface: #fff8f7;
+    --md-sys-color-on-surface: #231917;
+    --md-sys-color-surface-variant: #f5ddda;
+    --md-sys-color-on-surface-variant: #534341;
+    --md-sys-color-outline: #857370;
+    --md-sys-color-outline-variant: #d8c2be;
+    --md-sys-color-inverse-surface: #382e2c;
+    --md-sys-color-inverse-on-surface: #ffedea;
+    --md-sys-color-inverse-primary: #ffb4ab;
+    --md-sys-color-surface-dim: #e8d6d2;
+    --md-sys-color-surface-bright: #fff8f7;
+    --md-sys-color-surface-container-lowest: #ffffff;
+    --md-sys-color-surface-container-low: #fff0ee;
+    --md-sys-color-surface-container: #fceae6;
+    --md-sys-color-surface-container-high: #f7e4e1;
+    --md-sys-color-surface-container-highest: #f1dedb;
+
+    color-scheme: light;
+  }
 }
 
 * {
@@ -26,15 +116,6 @@ body,
 }
 
 body {
-  background: radial-gradient(circle at 50% 0%, #2a2c36 0%, var(--bg) 60%);
-  color: var(--text);
-}
-
-button {
-  font: inherit;
-  cursor: pointer;
-}
-
-button:disabled {
-  cursor: not-allowed;
+  background: var(--md-sys-color-background);
+  color: var(--md-sys-color-on-background);
 }

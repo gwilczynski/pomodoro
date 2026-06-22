@@ -1,3 +1,7 @@
+import '@material/web/button/filled-button.js'
+import '@material/web/button/text-button.js'
+import '@material/web/chips/chip-set.js'
+import '@material/web/chips/suggestion-chip.js'
 import { formatTime } from '../lib/time'
 import type { TimerStatus } from '../hooks/useTimer'
 
@@ -25,62 +29,61 @@ export function Controls({
   const isRunning = status === 'running'
   const isFinished = status === 'finished'
   // Show the live clock when there is a session in flight, otherwise the set duration.
-  const display =
-    status === 'idle' ? durationSec : remainingSec
+  const display = status === 'idle' ? durationSec : remainingSec
   const canStart = !isRunning && (isFinished ? durationSec > 0 : remainingSec > 0)
 
   return (
     <div className="controls">
       <div
-        className="controls__readout"
+        className="controls__readout md-typescale-display-large"
         aria-live="polite"
         data-status={status}
       >
         {formatTime(display)}
       </div>
 
-      {isFinished && <p className="controls__done">Time’s up!</p>}
+      {isFinished && (
+        <p className="controls__done md-typescale-title-medium">Time’s up!</p>
+      )}
 
-      <div className="controls__presets">
+      <md-chip-set className="controls__presets" aria-label="Duration presets">
         {PRESETS_MIN.map((min) => (
-          <button
-            type="button"
+          <md-suggestion-chip
             key={min}
-            className="controls__preset"
             onClick={() => onSetDuration(min * 60)}
           >
             {min}m
-          </button>
+          </md-suggestion-chip>
         ))}
-      </div>
+      </md-chip-set>
 
       <div className="controls__main">
         {isRunning ? (
-          <button
-            type="button"
-            className="controls__btn controls__btn--pause"
+          <md-filled-button
+            className="controls__btn"
             onClick={onPause}
           >
             Pause
-          </button>
+          </md-filled-button>
         ) : (
-          <button
-            type="button"
-            className="controls__btn controls__btn--start"
+          <md-filled-button
+            className="controls__btn"
             onClick={onStart}
-            disabled={!canStart}
+            // React serializes `disabled={false}` as the literal attribute
+            // disabled="false" on a custom element, which Lit reads as true.
+            // Emit the attribute only when actually disabled.
+            disabled={!canStart || undefined}
           >
             {status === 'paused' ? 'Resume' : 'Start'}
-          </button>
+          </md-filled-button>
         )}
-        <button
-          type="button"
-          className="controls__btn controls__btn--reset"
+        <md-text-button
+          className="controls__btn"
           onClick={onReset}
-          disabled={status === 'idle'}
+          disabled={status === 'idle' || undefined}
         >
           Reset
-        </button>
+        </md-text-button>
       </div>
     </div>
   )

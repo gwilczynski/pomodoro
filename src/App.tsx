@@ -13,8 +13,8 @@ export default function App() {
 
   return (
     <main className="app">
-      <h1 className="app__title">Time Timer</h1>
-      <p className="app__hint">
+      <h1 className="app__title md-typescale-headline-medium">Time Timer</h1>
+      <p className="app__hint md-typescale-body-medium">
         Drag the dial to set time, then press start. The colored slice shrinks
         as time runs out.
       </p>

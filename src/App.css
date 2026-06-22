@@ -4,34 +4,32 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1.25rem;
+  gap: 1.5rem;
   padding: 2rem 1rem 3rem;
   text-align: center;
 }
 
 .app__title {
   margin: 0;
-  font-size: 1.6rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
+  color: var(--md-sys-color-on-background);
 }
 
 .app__hint {
   margin: 0;
   max-width: 28rem;
-  color: var(--muted);
-  font-size: 0.9rem;
-  line-height: 1.4;
+  color: var(--md-sys-color-on-surface-variant);
 }
 
-/* ---- Disk ---- */
+/* ---- Disk ----
+ * The dial is hand-drawn data-viz, so it uses the brand --tt-* tokens rather
+ * than MD3 surface roles — the Time Timer red and light face stay constant. */
 .timer-disk {
   width: min(78vw, 340px);
   height: auto;
-  color: var(--face-ink);
+  color: var(--tt-face-ink);
   touch-action: none; /* let pointer drag work on touch without scrolling */
   user-select: none;
-  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.45));
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.35));
 }
 
 .timer-disk--draggable {
@@ -43,19 +41,19 @@
 }
 
 .timer-disk__face {
-  fill: var(--face);
-  stroke: #d7d9e0;
+  fill: var(--tt-face);
+  stroke: var(--tt-face-edge);
   stroke-width: 3;
 }
 
 .timer-disk__wedge {
-  fill: var(--accent);
+  fill: var(--tt-wedge);
   transition: fill 120ms ease;
 }
 
 .timer-disk__hub {
-  fill: var(--face-ink);
-  stroke: var(--face);
+  fill: var(--tt-face-ink);
+  stroke: var(--tt-face);
   stroke-width: 2;
 }
 
@@ -64,83 +62,38 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.85rem;
+  gap: 1rem;
   width: min(92vw, 340px);
 }
 
 .controls__readout {
   font-variant-numeric: tabular-nums;
-  font-size: 2.6rem;
-  font-weight: 700;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   line-height: 1;
+  color: var(--md-sys-color-on-background);
 }
 
 .controls__readout[data-status='finished'] {
-  color: var(--accent);
+  color: var(--md-sys-color-primary);
 }
 
 .controls__done {
-  margin: -0.4rem 0 0;
-  color: var(--accent);
-  font-weight: 600;
+  margin: -0.25rem 0 0;
+  color: var(--md-sys-color-primary);
 }
 
-.controls__presets,
+.controls__presets {
+  justify-content: center;
+}
+
 .controls__main {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.75rem;
   flex-wrap: wrap;
   justify-content: center;
 }
 
-.controls__preset {
-  min-width: 3rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 999px;
-  border: 1px solid #3a3c47;
-  background: var(--surface);
-  color: var(--text);
-  transition: background 120ms ease, border-color 120ms ease;
-}
-
-.controls__preset:hover:not(:disabled) {
-  border-color: var(--accent);
-}
-
-.controls__btn {
-  min-width: 6.5rem;
-  padding: 0.7rem 1.25rem;
-  border-radius: 999px;
-  border: none;
-  font-weight: 600;
-  color: #fff;
-  transition: transform 80ms ease, background 120ms ease, opacity 120ms ease;
-}
-
-.controls__btn:active:not(:disabled) {
-  transform: translateY(1px);
-}
-
-.controls__btn--start {
-  background: var(--accent);
-}
-
-.controls__btn--start:hover:not(:disabled) {
-  background: var(--accent-dim);
-}
-
-.controls__btn--pause {
-  background: #4a4d5a;
-}
-
-.controls__btn--reset {
-  background: transparent;
-  border: 1px solid #3a3c47;
-  color: var(--muted);
-}
-
-.controls__btn:disabled,
-.controls__preset:disabled {
-  opacity: 0.4;
+/* Give the primary action a little more presence than the MD3 default. */
+.controls__main md-filled-button {
+  min-width: 8rem;
 }
