@@ -86,7 +86,7 @@ export function ThemeMenu({ themeId, onSelect }: ThemeMenuProps) {
               >
                 <span
                   className="theme-menu__swatch"
-                  style={{ background: theme.tokens['--tt-wedge'] }}
+                  style={{ background: theme.swatch }}
                   aria-hidden="true"
                 />
                 <span className="theme-menu__label md-typescale-body-medium">

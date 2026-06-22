@@ -1,121 +1,236 @@
 /**
- * Color themes for the Time Timer disk.
+ * Color themes for the whole app.
  *
- * Each theme is just a set of CSS custom-property overrides applied to :root.
- * The hand-drawn SVG disk reads these --tt-* tokens (see index.css / App.css),
- * so swapping a theme is purely a matter of re-pointing the variables — no
- * component logic changes. This module is the single source of truth: the menu
- * swatches and the applied styles both come from `tokens`.
+ * A theme is a small palette mapped onto CSS custom properties applied to
+ * :root: the MD3 --md-sys-color-* roles (page background, text, surfaces,
+ * accent — read by the title, hint, chips and menu) and the brand --tt-* roles
+ * (the hand-drawn SVG disk). Swapping a theme is purely re-pointing variables;
+ * no component logic changes. This module is the single source of truth — the
+ * menu swatches and the applied styles both come from here.
  *
- * Light-named themes (Cotton Ball White, Pale Shale) also tune the face/ink so
- * the remaining-time slice keeps enough contrast to read at a glance.
+ * Inline styles set by `applyTheme` win over the stylesheet (and its
+ * prefers-color-scheme block), so an applied theme fully governs the look
+ * regardless of the OS setting.
  */
 
-export interface ThemeTokens {
-  /** The remaining-time slice — the defining color of each theme. */
-  '--tt-wedge': string
-  /** The disk face fill. */
-  '--tt-face': string
-  /** Ticks, labels, hub and SVG `currentColor`. */
-  '--tt-face-ink': string
-  /** The thin ring around the face. */
-  '--tt-face-edge': string
-  /** Accent for the finished readout / "Time's up!" text. */
-  '--tt-accent': string
+interface Palette {
+  /** Page background. */
+  bg: string
+  /** Elevated surface (the menu panel). */
+  surface: string
+  /** Hover/state-layer surface. */
+  surfaceHi: string
+  /** Primary text (title, readout, menu items). */
+  text: string
+  /** Secondary text (hint, gear, chip labels). */
+  textMuted: string
+  /** Borders / dividers (chip outlines). */
+  outline: string
+  /** Accent: focus rings, checkmark, finished readout. */
+  accent: string
+  /** Text drawn on the accent color. */
+  onAccent: string
+  /** The remaining-time slice — the defining color of the theme. */
+  wedge: string
+  /** Disk face fill. */
+  face: string
+  /** Ticks, labels, hub, SVG currentColor. */
+  faceInk: string
+  /** Thin ring around the face. */
+  faceEdge: string
+}
+
+/** Expand a compact palette into the full set of :root custom properties. */
+function tokens(p: Palette): Record<string, string> {
+  return {
+    // ---- MD3 system colors (page chrome: bg, text, surfaces, accent) ----
+    '--md-sys-color-background': p.bg,
+    '--md-sys-color-on-background': p.text,
+    '--md-sys-color-surface': p.bg,
+    '--md-sys-color-on-surface': p.text,
+    '--md-sys-color-surface-dim': p.bg,
+    '--md-sys-color-surface-bright': p.surface,
+    '--md-sys-color-surface-container-lowest': p.bg,
+    '--md-sys-color-surface-container-low': p.surface,
+    '--md-sys-color-surface-container': p.surface,
+    '--md-sys-color-surface-container-high': p.surface,
+    '--md-sys-color-surface-container-highest': p.surfaceHi,
+    '--md-sys-color-surface-variant': p.surfaceHi,
+    '--md-sys-color-on-surface-variant': p.textMuted,
+    '--md-sys-color-outline': p.outline,
+    '--md-sys-color-outline-variant': p.outline,
+    '--md-sys-color-primary': p.accent,
+    '--md-sys-color-on-primary': p.onAccent,
+    '--md-sys-color-surface-tint': p.accent,
+    // ---- Brand tokens for the SVG disk ----
+    '--tt-wedge': p.wedge,
+    '--tt-face': p.face,
+    '--tt-face-ink': p.faceInk,
+    '--tt-face-edge': p.faceEdge,
+    '--tt-accent': p.accent,
+  }
 }
 
 export interface Theme {
   id: string
   label: string
-  tokens: ThemeTokens
+  /** Whether to render form controls / scrollbars dark. */
+  dark: boolean
+  /** Color shown in the menu swatch (the wedge color). */
+  swatch: string
+  /** Custom properties applied to :root for this theme. */
+  tokens: Record<string, string>
 }
 
+function theme(
+  id: string,
+  label: string,
+  dark: boolean,
+  p: Palette,
+): Theme {
+  return { id, label, dark, swatch: p.wedge, tokens: tokens(p) }
+}
+
+// Every theme is dark: a deep, color-tinted background and surfaces with light
+// text, while the identity color stays vivid as the wedge/accent. The disk face
+// is a dark surface too, so its ink/ticks flip to light to keep contrast.
 export const THEMES: Theme[] = [
-  {
-    id: 'classic-red',
-    label: 'Classic Red',
-    tokens: {
-      '--tt-wedge': '#e8413a',
-      '--tt-face': '#f4f5f8',
-      '--tt-face-ink': '#2a2c34',
-      '--tt-face-edge': '#d7d9e0',
-      // Track the MD3 primary so the finished text stays scheme-correct.
-      '--tt-accent': 'var(--md-sys-color-primary)',
-    },
-  },
-  {
-    id: 'dreamsicle-orange',
-    label: 'Dreamsicle Orange',
-    tokens: {
-      '--tt-wedge': '#f47a30',
-      '--tt-face': '#fff6ee',
-      '--tt-face-ink': '#4a3324',
-      '--tt-face-edge': '#f3e3d4',
-      '--tt-accent': '#e1611f',
-    },
-  },
-  {
-    id: 'cotton-ball-white',
-    label: 'Cotton Ball White',
-    // A cotton-white slice on a deep slate face so "white" stays legible.
-    tokens: {
-      '--tt-wedge': '#f4f2ec',
-      '--tt-face': '#3a3d44',
-      '--tt-face-ink': '#edebe4',
-      '--tt-face-edge': '#2e3036',
-      '--tt-accent': '#9aa0aa',
-    },
-  },
-  {
-    id: 'lake-day-blue',
-    label: 'Lake Day Blue',
-    tokens: {
-      '--tt-wedge': '#3e92c8',
-      '--tt-face': '#f2f8fc',
-      '--tt-face-ink': '#16384a',
-      '--tt-face-edge': '#d9eaf4',
-      '--tt-accent': '#2c7db0',
-    },
-  },
-  {
-    id: 'pale-shale',
-    label: 'Pale Shale',
-    // A deeper shale slice on a pale greige face keeps the wedge visible.
-    tokens: {
-      '--tt-wedge': '#7e7a66',
-      '--tt-face': '#f3f2ec',
-      '--tt-face-ink': '#3a382e',
-      '--tt-face-edge': '#e4e2d8',
-      '--tt-accent': '#6f6b57',
-    },
-  },
-  {
-    id: 'peony-pink',
-    label: 'Peony Pink',
-    tokens: {
-      '--tt-wedge': '#e86aa0',
-      '--tt-face': '#fff4f8',
-      '--tt-face-ink': '#4a2236',
-      '--tt-face-edge': '#f6dee9',
-      '--tt-accent': '#d24e89',
-    },
-  },
-  {
-    id: 'fern-green',
-    label: 'Fern Green',
-    tokens: {
-      '--tt-wedge': '#5e9e5a',
-      '--tt-face': '#f2f8f1',
-      '--tt-face-ink': '#1f3a1d',
-      '--tt-face-edge': '#ddebda',
-      '--tt-accent': '#4c8a49',
-    },
-  },
+  // Default — the app's original red-on-dark look.
+  theme('classic-red', 'Classic Red', true, {
+    bg: '#1a1110',
+    surface: '#271d1b',
+    surfaceHi: '#3d3230',
+    text: '#f1dedb',
+    textMuted: '#d8c2be',
+    outline: '#a08c89',
+    accent: '#ffb4ab',
+    onAccent: '#690005',
+    wedge: '#e8413a',
+    face: '#2a211f',
+    faceInk: '#f1dedb',
+    faceEdge: '#3d3230',
+  }),
+  theme('dreamsicle-orange', 'Dreamsicle Orange', true, {
+    bg: '#1c130c',
+    surface: '#2a1e14',
+    surfaceHi: '#3b2c1d',
+    text: '#f6e4d5',
+    textMuted: '#d2b39a',
+    outline: '#7d6249',
+    accent: '#ff9a5a',
+    onAccent: '#3a1e08',
+    wedge: '#f47a30',
+    face: '#2a1e14',
+    faceInk: '#f6e4d5',
+    faceEdge: '#3b2c1d',
+  }),
+  theme('cotton-ball-white', 'Cotton Ball White', true, {
+    bg: '#16181c',
+    surface: '#212429',
+    surfaceHi: '#2e323a',
+    text: '#edeef2',
+    textMuted: '#b8bcc4',
+    outline: '#5b606a',
+    accent: '#dfe3ea',
+    onAccent: '#1b1d22',
+    wedge: '#f4f2ec',
+    face: '#262a31',
+    faceInk: '#edeef2',
+    faceEdge: '#363b44',
+  }),
+  theme('lake-day-blue', 'Lake Day Blue', true, {
+    bg: '#0d161c',
+    surface: '#15232c',
+    surfaceHi: '#1f3340',
+    text: '#dbeaf4',
+    textMuted: '#a3c2d3',
+    outline: '#4f6e7f',
+    accent: '#5bb0e6',
+    onAccent: '#04222f',
+    wedge: '#3e92c8',
+    face: '#15232c',
+    faceInk: '#dbeaf4',
+    faceEdge: '#1f3340',
+  }),
+  theme('pale-shale', 'Pale Shale', true, {
+    bg: '#16150f',
+    surface: '#221f17',
+    surfaceHi: '#322f24',
+    text: '#e9e6d8',
+    textMuted: '#c0bca8',
+    outline: '#6f6b57',
+    accent: '#bdb798',
+    onAccent: '#26241a',
+    wedge: '#a8a181',
+    face: '#221f17',
+    faceInk: '#e9e6d8',
+    faceEdge: '#322f24',
+  }),
+  theme('peony-pink', 'Peony Pink', true, {
+    bg: '#1c0f15',
+    surface: '#2a1a21',
+    surfaceHi: '#3b2630',
+    text: '#f6dde8',
+    textMuted: '#d6acbd',
+    outline: '#7d5867',
+    accent: '#f278ab',
+    onAccent: '#3c0f22',
+    wedge: '#e86aa0',
+    face: '#2a1a21',
+    faceInk: '#f6dde8',
+    faceEdge: '#3b2630',
+  }),
+  theme('fern-green', 'Fern Green', true, {
+    bg: '#0f160d',
+    surface: '#172414',
+    surfaceHi: '#21331d',
+    text: '#dcecd7',
+    textMuted: '#a8c4a2',
+    outline: '#4f6e4b',
+    accent: '#79c074',
+    onAccent: '#0a2208',
+    wedge: '#5e9e5a',
+    face: '#172414',
+    faceInk: '#dcecd7',
+    faceEdge: '#21331d',
+  }),
 ]
 
 export const DEFAULT_THEME_ID = 'classic-red'
 
+const STORAGE_KEY = 'tt-theme'
+
 /** Look up a theme by id, falling back to the default if it's unknown. */
 export function getTheme(id: string | null | undefined): Theme {
   return THEMES.find((t) => t.id === id) ?? THEMES[0]
+}
+
+/** Read the saved theme id, tolerating unavailable storage (private mode). */
+export function readStoredThemeId(): string {
+  try {
+    return localStorage.getItem(STORAGE_KEY) ?? DEFAULT_THEME_ID
+  } catch {
+    return DEFAULT_THEME_ID
+  }
+}
+
+/** Persist the chosen theme id (best-effort). */
+export function persistThemeId(id: string) {
+  try {
+    localStorage.setItem(STORAGE_KEY, id)
+  } catch {
+    // Persisting is best-effort; the theme still applies for this session.
+  }
+}
+
+/** Apply a theme's custom properties (and color-scheme) to the document root. */
+export function applyTheme(theme: Theme) {
+  const root = document.documentElement
+  for (const [token, value] of Object.entries(theme.tokens)) {
+    root.style.setProperty(token, value)
+  }
+  root.style.setProperty('color-scheme', theme.dark ? 'dark' : 'light')
+  // Keep the mobile browser chrome in step with the page background.
+  const meta = document.querySelector('meta[name="theme-color"]')
+  meta?.setAttribute('content', theme.tokens['--md-sys-color-background'])
 }
