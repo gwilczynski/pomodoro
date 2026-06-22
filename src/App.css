@@ -9,22 +9,26 @@
   text-align: center;
 }
 
-/* ---- App bar (fixed top header: brand left, settings gear right) ---- */
+/* ---- App bar (fixed top header: brand left, settings gear right) ----
+ * A touch lighter than the page background — surface-container-low sits one
+ * step up the elevation ramp (see github.com/gwilczynski/radio). */
 .app-bar {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 5;
+  height: 64px;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1rem;
+  padding: 0 1rem;
+  background-color: var(--md-sys-color-surface-container-low);
 }
 
 .app-bar__logo {
-  width: 28px;
-  height: 28px;
+  height: 32px;
+  width: auto;
 }
 
 .app-bar__title {
