@@ -50,11 +50,15 @@
   --md-sys-color-surface-container-high: #322825;
   --md-sys-color-surface-container-highest: #3d3230;
 
-  /* ---- Brand tokens for the SVG disk (scheme-independent) ---- */
+  /* ---- Disk theme tokens (default: Classic Red) ----
+   * useTheme applies the selected theme's values as inline styles on :root,
+   * which override these. These stand in before JS runs and if storage fails;
+   * see src/lib/themes.ts for the full set of selectable themes. */
   --tt-wedge: #e8413a;
   --tt-face: #f4f5f8;
   --tt-face-ink: #2a2c34;
   --tt-face-edge: #d7d9e0;
+  --tt-accent: var(--md-sys-color-primary);
 
   color-scheme: dark;
   font-family: 'Roboto', system-ui, -apple-system, 'Segoe UI', sans-serif;
