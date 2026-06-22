@@ -72,6 +72,9 @@ export function TimerDisk({
   onSetDuration,
 }: TimerDiskProps) {
   const svgRef = useRef<SVGSVGElement | null>(null)
+  // Last minutes read during the current drag, used to keep a single drag from
+  // jumping across the 12 o'clock seam (where 0 and maxMinutes coincide).
+  const lastMinutesRef = useRef<number | null>(null)
   // Editable any time except when finished — dragging mid-run restarts the
   // countdown from the new duration without stopping the clock.
   const draggable = status !== 'finished'
@@ -86,7 +89,18 @@ export function TimerDisk({
       const x = ((clientX - rect.left) / rect.width) * SIZE
       const y = ((clientY - rect.top) / rect.height) * SIZE
       const angle = pointToAngle(CENTER, CENTER, x, y)
-      const minutes = Math.round((angle / 360) * maxMinutes)
+      let minutes = Math.round((angle / 360) * maxMinutes)
+
+      // The dial's 0 and maxMinutes share the 12 o'clock point, so a hair of
+      // movement across the top would otherwise flip the value between the two
+      // extremes. Clamp at the seam instead: a single drag can't leap across
+      // 12 o'clock — it stays pinned to whichever end it approached from.
+      const prev = lastMinutesRef.current
+      if (prev != null) {
+        if (prev - minutes > maxMinutes / 2) minutes = maxMinutes
+        else if (minutes - prev > maxMinutes / 2) minutes = 0
+      }
+      lastMinutesRef.current = minutes
       return minutes * 60
     },
     [durationSec, maxMinutes],
@@ -96,6 +110,8 @@ export function TimerDisk({
     (e: React.PointerEvent<SVGSVGElement>) => {
       if (!draggable) return
       e.currentTarget.setPointerCapture(e.pointerId)
+      // Fresh drag: start with no seam guard so the first tap reads as-is.
+      lastMinutesRef.current = null
       onSetDuration(durationFromEvent(e.clientX, e.clientY))
     },
     [draggable, durationFromEvent, onSetDuration],
