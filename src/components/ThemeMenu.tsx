@@ -10,10 +10,10 @@ interface ThemeMenuProps {
 }
 
 /**
- * A settings gear, fixed top-right, that opens a popover for choosing the disk
- * color theme. Closes on outside click or Escape. The panel uses plain buttons
- * (role=menuitemradio) so the choice is reachable to keyboard and assistive
- * tech and queryable by name in tests.
+ * A settings gear (lives at the right edge of the app bar) that opens a popover
+ * for choosing the disk color theme. Closes on outside click or Escape. The
+ * panel uses plain buttons (role=menuitemradio) so the choice is reachable to
+ * keyboard and assistive tech and queryable by name in tests.
  */
 export function ThemeMenu({ themeId, onSelect }: ThemeMenuProps) {
   const [open, setOpen] = useState(false)
@@ -58,37 +58,27 @@ export function ThemeMenu({ themeId, onSelect }: ThemeMenuProps) {
           role="menu"
           aria-label="Color theme"
         >
-          <p className="theme-menu__heading md-typescale-title-small">Color theme</p>
-          {THEMES.map((theme) => {
-            const selected = theme.id === themeId
-            return (
-              <button
-                key={theme.id}
-                type="button"
-                className="theme-menu__item"
-                role="menuitemradio"
-                aria-checked={selected}
-                onClick={() => {
-                  onSelect(theme.id)
-                  setOpen(false)
-                }}
-              >
-                <span
-                  className="theme-menu__swatch"
-                  style={{ background: theme.swatch }}
-                  aria-hidden="true"
-                />
-                <span className="theme-menu__label md-typescale-body-medium">
-                  {theme.label}
-                </span>
-                {selected && (
-                  <span className="theme-menu__check" aria-hidden="true">
-                    ✓
-                  </span>
-                )}
-              </button>
-            )
-          })}
+          <p className="theme-menu__heading">Theme</p>
+          {THEMES.map((theme) => (
+            <button
+              key={theme.id}
+              type="button"
+              className="theme-menu__item"
+              role="menuitemradio"
+              aria-checked={theme.id === themeId}
+              onClick={() => {
+                onSelect(theme.id)
+                setOpen(false)
+              }}
+            >
+              <span
+                className="theme-menu__swatch"
+                style={{ background: theme.swatch }}
+                aria-hidden="true"
+              />
+              <span className="theme-menu__label">{theme.label}</span>
+            </button>
+          ))}
         </div>
       )}
     </div>

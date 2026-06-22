@@ -13,7 +13,7 @@ export default function AppBar({ themeId, onThemeChange }: AppBarProps) {
   return (
     <header className="app-bar">
       <img src={lunaremLogo} alt="" className="app-bar__logo" aria-hidden="true" />
-      <span className="app-bar__title md-typescale-title-medium">Lunarem Pomodoro</span>
+      <span className="app-bar__title">Lunarem Pomodoro</span>
       <ThemeMenu themeId={themeId} onSelect={onThemeChange} />
     </header>
   )

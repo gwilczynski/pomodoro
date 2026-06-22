@@ -15,29 +15,31 @@ export default function App() {
   const { themeId, setTheme } = useTheme()
 
   return (
-    <main className="app">
+    <>
       <AppBar themeId={themeId} onThemeChange={setTheme} />
 
-      <h1 className="app__title md-typescale-headline-medium">Time Timer</h1>
-      <p className="app__hint md-typescale-body-medium">
-        Pick a preset or drag the dial — the countdown starts right away. The
-        colored slice shrinks as time runs out.
-      </p>
+      <main className="app">
+        <h1 className="app__title md-typescale-headline-medium">Time Timer</h1>
+        <p className="app__hint md-typescale-body-medium">
+          Pick a preset or drag the dial — the countdown starts right away. The
+          colored slice shrinks as time runs out.
+        </p>
 
-      <TimerDisk
-        remainingSec={timer.remainingSec}
-        durationSec={timer.durationSec}
-        maxMinutes={MAX_MINUTES}
-        status={timer.status}
-        onSetDuration={timer.setDuration}
-      />
+        <TimerDisk
+          remainingSec={timer.remainingSec}
+          durationSec={timer.durationSec}
+          maxMinutes={MAX_MINUTES}
+          status={timer.status}
+          onSetDuration={timer.setDuration}
+        />
 
-      <Controls
-        status={timer.status}
-        remainingSec={timer.remainingSec}
-        durationSec={timer.durationSec}
-        onSetDuration={timer.setDuration}
-      />
-    </main>
+        <Controls
+          status={timer.status}
+          remainingSec={timer.remainingSec}
+          durationSec={timer.durationSec}
+          onSetDuration={timer.setDuration}
+        />
+      </main>
+    </>
   )
 }
