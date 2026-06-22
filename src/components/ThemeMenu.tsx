@@ -1,23 +1,12 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { THEMES } from '../lib/themes'
+import IconSettings from './icons/IconSettings'
 
 interface ThemeMenuProps {
   /** Currently active theme id. */
   themeId: string
   /** Called with the chosen theme id. */
   onSelect: (id: string) => void
-}
-
-/** A cog drawn inline so we don't pull in an icon font (and avoid its flash). */
-function GearIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="24" height="24">
-      <path
-        fill="currentColor"
-        d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0 6a2 2 0 1 1 0-4 2 2 0 0 1 0 4Zm7.4-2a7.6 7.6 0 0 0-.1-1.2l2-1.6-2-3.4-2.4 1a7.5 7.5 0 0 0-2-1.2L14.5 2h-4l-.4 2.6a7.5 7.5 0 0 0-2 1.2l-2.4-1-2 3.4 2 1.6a7.7 7.7 0 0 0 0 2.4l-2 1.6 2 3.4 2.4-1c.6.5 1.3.9 2 1.2l.4 2.6h4l.4-2.6c.7-.3 1.4-.7 2-1.2l2.4 1 2-3.4-2-1.6c.1-.4.1-.8.1-1.2Z"
-      />
-    </svg>
-  )
 }
 
 /**
@@ -59,7 +48,7 @@ export function ThemeMenu({ themeId, onSelect }: ThemeMenuProps) {
         aria-controls={open ? menuId : undefined}
         onClick={() => setOpen((v) => !v)}
       >
-        <GearIcon />
+        <IconSettings />
       </button>
 
       {open && (

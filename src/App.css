@@ -9,6 +9,29 @@
   text-align: center;
 }
 
+/* ---- App bar (fixed top header: brand left, settings gear right) ---- */
+.app-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+}
+
+.app-bar__logo {
+  width: 28px;
+  height: 28px;
+}
+
+.app-bar__title {
+  margin: 0;
+  color: var(--md-sys-color-on-background);
+}
+
 .app__title {
   margin: 0;
   color: var(--md-sys-color-on-background);

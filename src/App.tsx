@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
+import AppBar from './components/AppBar'
 import { TimerDisk } from './components/TimerDisk'
 import { Controls } from './components/Controls'
-import { ThemeMenu } from './components/ThemeMenu'
 import { useTimer } from './hooks/useTimer'
 import { useTheme } from './hooks/useTheme'
 import { playBeep } from './lib/beep'
@@ -16,7 +16,7 @@ export default function App() {
 
   return (
     <main className="app">
-      <ThemeMenu themeId={themeId} onSelect={setTheme} />
+      <AppBar themeId={themeId} onThemeChange={setTheme} />
 
       <h1 className="app__title md-typescale-headline-medium">Time Timer</h1>
       <p className="app__hint md-typescale-body-medium">
