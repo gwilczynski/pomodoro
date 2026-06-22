@@ -1,4 +1,3 @@
-import '@material/web/button/filled-button.js'
 import '@material/web/chips/chip-set.js'
 import '@material/web/chips/suggestion-chip.js'
 import { formatTime } from '../lib/time'
@@ -10,8 +9,6 @@ interface ControlsProps {
   status: TimerStatus
   remainingSec: number
   durationSec: number
-  onPause: () => void
-  onResume: () => void
   onSetDuration: (seconds: number) => void
 }
 
@@ -19,12 +16,8 @@ export function Controls({
   status,
   remainingSec,
   durationSec,
-  onPause,
-  onResume,
   onSetDuration,
 }: ControlsProps) {
-  const isRunning = status === 'running'
-  const isPaused = status === 'paused'
   const isFinished = status === 'finished'
   // Show the live clock when there is a session in flight, otherwise the set duration.
   const display = status === 'idle' ? durationSec : remainingSec
@@ -53,19 +46,6 @@ export function Controls({
           </md-suggestion-chip>
         ))}
       </md-chip-set>
-
-      {/* The countdown starts as soon as a duration is picked, so the only
-          button left is the pause/resume toggle for a live session. */}
-      {(isRunning || isPaused) && (
-        <div className="controls__main">
-          <md-filled-button
-            className="controls__btn"
-            onClick={isRunning ? onPause : onResume}
-          >
-            {isRunning ? 'Pause' : 'Resume'}
-          </md-filled-button>
-        </div>
-      )}
     </div>
   )
 }

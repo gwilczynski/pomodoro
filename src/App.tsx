@@ -31,8 +31,6 @@ export default function App() {
         status={timer.status}
         remainingSec={timer.remainingSec}
         durationSec={timer.durationSec}
-        onPause={timer.pause}
-        onResume={timer.start}
         onSetDuration={timer.setDuration}
       />
     </main>

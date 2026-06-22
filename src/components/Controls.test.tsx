@@ -13,8 +13,6 @@ function setup(overrides: Partial<React.ComponentProps<typeof Controls>> = {}) {
     status: 'idle' as const,
     remainingSec: 1500,
     durationSec: 1500,
-    onPause: vi.fn(),
-    onResume: vi.fn(),
     onSetDuration: vi.fn(),
     ...overrides,
   }
@@ -30,22 +28,12 @@ describe('Controls', () => {
     expect(screen.getByText('25:00')).toBeInTheDocument()
   })
 
-  it('has no start or reset button — picking a duration runs the timer', () => {
-    setup()
+  it('renders no control buttons — presets are the only input', () => {
+    setup({ status: 'running', remainingSec: 1490 })
     expect(screen.queryByText('Start')).not.toBeInTheDocument()
     expect(screen.queryByText('Reset')).not.toBeInTheDocument()
-  })
-
-  it('shows Pause while running and fires onPause', async () => {
-    const props = setup({ status: 'running', remainingSec: 1490 })
-    await userEvent.click(screen.getByText('Pause'))
-    expect(props.onPause).toHaveBeenCalledTimes(1)
-  })
-
-  it('shows Resume while paused and fires onResume', async () => {
-    const props = setup({ status: 'paused', remainingSec: 1000 })
-    await userEvent.click(screen.getByText('Resume'))
-    expect(props.onResume).toHaveBeenCalledTimes(1)
+    expect(screen.queryByText('Pause')).not.toBeInTheDocument()
+    expect(screen.queryByText('Resume')).not.toBeInTheDocument()
   })
 
   it('presets call onSetDuration with the right seconds', async () => {

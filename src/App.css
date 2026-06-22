@@ -85,15 +85,3 @@
 .controls__presets {
   justify-content: center;
 }
-
-.controls__main {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-/* Give the primary action a little more presence than the MD3 default. */
-.controls__main md-filled-button {
-  min-width: 8rem;
-}
