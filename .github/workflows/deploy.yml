@@ -32,8 +32,14 @@ jobs:
         with:
           path: dist
 
-  deploy:
+  test:
     needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - run: npm run test
+
+  deploy:
+    needs: test
     runs-on: ubuntu-latest
     environment:
       name: github-pages
